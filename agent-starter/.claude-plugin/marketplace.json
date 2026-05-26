@@ -1,0 +1,27 @@
+{
+  "name": "vara-trading-skill",
+  "owner": {
+    "name": "Gear Foundation"
+  },
+  "metadata": {
+    "version": "0.1.1",
+    "description": "Local CEX spot trading skill pack powered by the vara-agent CLI."
+  },
+  "plugins": [
+    {
+      "name": "vara-trading-skill",
+      "source": "./",
+      "version": "0.1.1",
+      "description": "Skill pack for AI agents using the local vara-agent CLI for onboarding, market data, balances, explicit spot orders, order management, and explicitly confirmed withdrawals on MEXC and Gate.io.",
+      "author": {
+        "name": "Gear Foundation"
+      },
+      "homepage": "https://github.com/gear-foundation/vara-trading-skill",
+      "repository": "https://github.com/gear-foundation/vara-trading-skill",
+      "license": "MIT",
+      "keywords": ["vara", "trading", "cex", "mexc", "gateio", "ai-agents"],
+      "category": "finance",
+      "tags": ["vara", "trading", "cex", "spot", "skills"]
+    }
+  ]
+}

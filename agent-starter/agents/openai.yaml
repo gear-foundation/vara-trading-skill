@@ -1,0 +1,7 @@
+interface:
+  display_name: "VARA Trading Skill"
+  short_description: "Local CEX spot trading via vara-agent"
+  default_prompt: "Use $vara-trading-skill to set up local exchange trading and run safe dry-run checks before any explicit live action."
+
+policy:
+  allow_implicit_invocation: true

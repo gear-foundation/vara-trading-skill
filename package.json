@@ -1,0 +1,51 @@
+{
+  "name": "vara-trading-skill",
+  "version": "0.1.1",
+  "description": "Local CLI and agent skill pack for CEX spot trading with VARA-first examples",
+  "type": "module",
+  "license": "MIT",
+  "author": "Gear Foundation",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gear-foundation/vara-trading-skill.git"
+  },
+  "homepage": "https://github.com/gear-foundation/vara-trading-skill#readme",
+  "bugs": {
+    "url": "https://github.com/gear-foundation/vara-trading-skill/issues"
+  },
+  "bin": {
+    "vara-agent": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "skills",
+    "agents",
+    "README.md",
+    "SKILL.md",
+    ".env.example"
+  ],
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "prepack": "npm run build",
+    "pack:check": "npm pack --dry-run"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "ccxt": "^4.0.0",
+    "commander": "^12.0.0",
+    "decimal.js": "^10.4.3",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}

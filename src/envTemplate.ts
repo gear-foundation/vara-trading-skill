@@ -1,0 +1,49 @@
+export const envTemplate = `# Global local agent settings
+VARA_AGENT_DRY_RUN=true
+VARA_AGENT_MAX_ORDER_USD=100
+VARA_AGENT_ALLOWED_EXCHANGES=mexc,gateio
+VARA_AGENT_ALLOWED_QUOTES=USDT
+
+# Future providers are kept in code but disabled in the active first release flow.
+VARA_AGENT_ENABLE_FUTURE_PROVIDERS=false
+
+# Withdrawal capability is high risk and disabled by default.
+# Enable only if you intentionally want API withdrawals.
+VARA_AGENT_ENABLE_WITHDRAWALS=false
+VARA_AGENT_ALLOWED_WITHDRAW_ASSETS=USDT,USDC,VARA
+VARA_AGENT_ALLOWED_WITHDRAW_NETWORKS=TRC20,ERC20,VARA
+VARA_AGENT_ALLOWED_WITHDRAW_ADDRESSES=
+VARA_AGENT_MAX_WITHDRAW_USDT=0
+VARA_AGENT_MAX_WITHDRAW_USDC=0
+VARA_AGENT_MAX_WITHDRAW_VARA=0
+
+# CEX trading API keys
+# Trading keys must have read + trade permissions only.
+# Withdrawal permission should be disabled for trading keys.
+
+MEXC_API_KEY=
+MEXC_API_SECRET=
+
+GATEIO_API_KEY=
+GATEIO_API_SECRET=
+
+# Optional dedicated withdrawal API keys
+# Use only if VARA_AGENT_ENABLE_WITHDRAWALS=true.
+# These keys may require withdrawal permission and should be restricted with address/IP allowlists whenever the exchange supports it.
+
+MEXC_WITHDRAW_API_KEY=
+MEXC_WITHDRAW_API_SECRET=
+
+GATEIO_WITHDRAW_API_KEY=
+GATEIO_WITHDRAW_API_SECRET=
+
+COINBASE_API_KEY=
+COINBASE_API_SECRET=
+
+CRYPTOCOM_API_KEY=
+CRYPTOCOM_API_SECRET=
+
+# Future integrations
+EXOLIX_API_KEY=
+BANXA_API_KEY=
+`;

@@ -18,12 +18,24 @@ npx skills add https://github.com/gear-foundation/vara-trading-skill/tree/master
 
 The GitHub skill pack lives in `agent-starter/`, matching the layout used by `gear-foundation/vara-agent-network`.
 
-Then run local setup:
+Then restart your agent session if it does not pick up newly installed skills immediately.
+
+## Start With An Agent
+
+After installation, ask your agent:
+
+```text
+Use vara-trading-skill and set up local trading.
+```
+
+The agent should run the local setup commands:
 
 ```bash
 vara-agent init-config
 vara-agent onboarding interactive
 ```
+
+`init-config` creates `~/.vara-trading-agent/.env` if it does not exist. The agent may create the file, start onboarding, and validate setup, but it must never ask the user to paste API keys into chat. When credentials are needed, the user edits `~/.vara-trading-agent/.env` locally.
 
 `npm install -g` installs the executable CLI. `npx skills add ...` installs `SKILL.md` and the recipe files into supported agent runtimes so the agent can discover `vara-trading-skill`.
 
@@ -37,7 +49,7 @@ Restart the agent session after installing skills if the runtime does not pick u
 
 ## Configure
 
-Start with the step-by-step onboarding wizard. The agent must explain setup choices before live trading:
+The setup starts with the step-by-step onboarding wizard. The agent must explain setup choices before live trading:
 
 ```bash
 vara-agent onboarding interactive

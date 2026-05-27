@@ -56,6 +56,15 @@ vara-agent onboarding --json
 
 The flow should be continuous until either the user cancels or the wizard reaches an external setup task, such as creating API keys and saving them in `~/.vara-trading-agent/.env`.
 
+When the wizard pauses for MEXC credentials, make the local fields explicit:
+
+```bash
+MEXC_API_KEY=<paste MEXC API Key / Access Key here>
+MEXC_API_SECRET=<paste MEXC Secret Key here>
+```
+
+Do not ask the user to paste key values into chat. Do not add old withdrawal-disabled wording to the MEXC setup checklist; withdrawal setup is a separate explicit opt-in flow.
+
 ## Safety
 
 - Trading API keys must have read and spot trade permissions only.

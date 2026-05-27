@@ -728,7 +728,9 @@ export function getCexSetupInstructionLines(integration?: string): string[] {
       "   - View Order Details",
       "6. Link IP Address is optional. Enable it only if you have a stable IP address.",
       "7. After the key is created, copy the API Key / Access Key and Secret Key shown by MEXC.",
-      "8. Save them locally in ~/.vara-trading-agent/.env as MEXC_API_KEY and MEXC_API_SECRET.",
+      "8. Open ~/.vara-trading-agent/.env and fill these exact lines:",
+      "   MEXC_API_KEY=<paste API Key / Access Key here>",
+      "   MEXC_API_SECRET=<paste Secret Key here>",
       "   Secret Key may be shown only once. Do not paste either value into chat.",
       "",
       "Safety checklist:",
@@ -787,8 +789,8 @@ function renderConnectCredentials(state: OnboardingState): string {
     "cp .env.example ~/.vara-trading-agent/.env",
     "chmod 600 ~/.vara-trading-agent/.env",
     "",
-    "Edit ~/.vara-trading-agent/.env and set the API key and secret for the selected exchange(s):",
-    ...credentialEnvLines(integrations),
+    "Edit ~/.vara-trading-agent/.env and fill the API key and secret for the selected exchange(s):",
+    ...credentialEnvSnippetLines(integrations),
     "",
     "The agent must never receive API keys in chat.",
     "",
@@ -1099,17 +1101,19 @@ function formatCexIntegration(integration: string): string {
   }
 }
 
-function credentialEnvLines(integrations: readonly ActiveCexIntegration[]): string[] {
+export function credentialEnvSnippetLines(integrations: readonly ActiveCexIntegration[]): string[] {
   if (integrations.length === 0) {
     return ["- No active CEX exchange selected"];
   }
 
   return integrations.flatMap((integration) => {
     const prefix = cexEnvPrefix(integration);
+    const label = formatCexIntegration(integration);
+    const apiKeyLabel = integration === "mexc" ? `${label} API Key / Access Key` : `${label} API Key`;
 
     return [
-      `- ${prefix}_API_KEY=`,
-      `- ${prefix}_API_SECRET=`,
+      `${prefix}_API_KEY=<paste ${apiKeyLabel} here>`,
+      `${prefix}_API_SECRET=<paste ${label} Secret Key here>`,
     ];
   });
 }

@@ -217,7 +217,13 @@ MEXC setup:
 - Enable View Order Details
 - Link IP Address is optional
 - Copy the API Key / Access Key and Secret Key shown by MEXC
-- Save them locally in `~/.vara-trading-agent/.env` as `MEXC_API_KEY` and `MEXC_API_SECRET`
+- Open `~/.vara-trading-agent/.env` and fill these exact lines:
+
+```bash
+MEXC_API_KEY=<paste MEXC API Key / Access Key here>
+MEXC_API_SECRET=<paste MEXC Secret Key here>
+```
+
 - Secret Key may be shown only once; never paste it into chat
 
 Required permissions:

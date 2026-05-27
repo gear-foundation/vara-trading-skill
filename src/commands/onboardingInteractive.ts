@@ -9,6 +9,7 @@ import {
   configureExolixSetup,
   configurePaperTrading,
   configureRiskLimits,
+  credentialEnvSnippetLines,
   confirmChecklist,
   finalConfirmOnboarding,
   getCexSetupInstructionLines,
@@ -441,7 +442,11 @@ function printCexCredentialsStep(): void {
   console.log("cp .env.example ~/.vara-trading-agent/.env");
   console.log("chmod 600 ~/.vara-trading-agent/.env");
   console.log("");
-  console.log("Edit ~/.vara-trading-agent/.env and set the API key and secret for the selected exchange(s).");
+  console.log("Edit ~/.vara-trading-agent/.env and fill the API key and secret for the selected exchange(s):");
+  credentialEnvSnippetLines(integrations).forEach((line) => {
+    console.log(line);
+  });
+  console.log("");
   console.log("The agent must never receive API keys in chat.");
   console.log("");
 }

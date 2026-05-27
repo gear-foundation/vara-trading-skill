@@ -198,7 +198,7 @@ Gate.io-specific setup:
 - Open Security and set a Fund Password first.
 - It protects fund security.
 - Trading does not require fund password input by default.
-- Open API Key Management.
+- Open API Key Management to create the Gate.io API key.
 - Create a dedicated API key for this agent.
 - Enable Read / View account data.
 - Enable Spot Trading.
@@ -212,6 +212,7 @@ GATEIO_API_SECRET=<paste Gate.io Secret Key here>
 ```
 
 - Secret Key may be shown only once; never paste it into chat.
+- Withdrawal permission is not part of normal trading setup. API withdrawals are high risk; enable them only with a separate dedicated withdrawal key if the user explicitly wants withdrawal automation.
 
 MEXC-specific setup:
 

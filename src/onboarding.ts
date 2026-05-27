@@ -709,7 +709,7 @@ export function getCexSetupInstructionLines(integration?: string): string[] {
       "1. Log in to your Gate.io account.",
       "2. Open Security and set a Fund Password first.",
       "   It protects fund security. Trading does not require fund password input by default.",
-      "3. Open API Key Management.",
+      "3. Open API Key Management to create the Gate.io API key.",
       "4. Create a new API key specifically for this agent.",
       "5. In the API key permission settings, enable only:",
       "   - Read / View account data",
@@ -720,12 +720,14 @@ export function getCexSetupInstructionLines(integration?: string): string[] {
       "   GATEIO_API_KEY=<paste Gate.io API Key here>",
       "   GATEIO_API_SECRET=<paste Gate.io Secret Key here>",
       "   Secret Key may be shown only once. Do not paste either value into chat.",
+      "9. Withdrawal permission is not part of normal trading setup. API withdrawals are high risk; enable them only with a separate dedicated withdrawal key if you explicitly want withdrawal automation.",
       "",
       "Safety checklist:",
       "[ ] I set a Fund Password in Security",
       "[ ] I created a separate Gate.io API key for this agent",
       "[ ] Read / View account data and Spot Trading are enabled",
       "[ ] IP whitelist is configured or intentionally skipped",
+      "[ ] I understand API withdrawals are high risk and require separate explicit setup",
       "[ ] I understand that trading is risky",
     ];
   }

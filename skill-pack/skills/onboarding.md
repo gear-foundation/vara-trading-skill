@@ -74,6 +74,8 @@ Do not ask the user to paste key values into chat. Do not add old withdrawal-dis
 
 If the user chooses both MEXC and Gate.io, show the full setup instructions for both exchanges before asking the user to confirm the checklist. Do not summarize them as a short generic checklist.
 
+For Gate.io, explicitly say that the API key is created in API Key Management. Mention withdrawal only as a separate high-risk opt-in capability that should use a dedicated withdrawal key if the user explicitly wants withdrawal automation.
+
 ## Safety
 
 - Trading API keys must have read and spot trade permissions only.

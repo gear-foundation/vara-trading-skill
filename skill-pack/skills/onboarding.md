@@ -4,6 +4,13 @@ Use this skill before live trading setup or when the user asks how to connect th
 
 Do not ask for API keys in chat. The user must configure credentials locally.
 
+Local setup files live in the user's home directory:
+
+- `~/.vara-trading-agent/.env`
+- `~/.vara-trading-agent/onboarding.json`
+
+If you mention file mode `600`, explain that it means only the local OS user can read and write the file. Do not describe the config as a project-local `./trading-agent` directory.
+
 ## Command
 
 ```bash

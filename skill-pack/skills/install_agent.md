@@ -15,6 +15,8 @@ The user must complete onboarding before live trading.
 
 `npm install -g` installs the local CLI. `npx skills add ...` installs this agent skill pack into supported agent runtimes.
 
+`vara-agent init-config` creates `~/.vara-trading-agent/.env`, not a project-local `./trading-agent` directory. If the agent reports permissions, explain that mode `600` means owner-only read/write access.
+
 If the user installed only the npm package, `vara-agent install-skills` can copy the packaged skill files into Codex-style local skill directories.
 
 ## Safety

@@ -46,6 +46,8 @@ If `vara-agent` is missing, stop and ask the user for permission to install it. 
 - The user must pass steps: Welcome, Choose Exchange, Setup Instructions, Connect Credentials, Risk Limits, Validation, Dry-run, Final Confirmation, Ready.
 - The user must explicitly choose MEXC, Gate.io, or both before live trading.
 - API credentials must be stored locally in `~/.vara-trading-agent/.env`.
+- When reporting setup files to the user, show full paths such as `~/.vara-trading-agent/.env` and `~/.vara-trading-agent/onboarding.json`.
+- If mentioning file mode `600`, explain it as owner-only read/write permissions.
 - Trading API keys must have read + trade permissions only.
 - Withdrawal permission must be disabled on trading API keys.
 - API withdrawals are available only as explicit opt-in high-risk actions.
@@ -169,6 +171,8 @@ For CEX trading, explain that the user must:
 4. Never grant Withdraw / Withdrawal permission to trading keys.
 5. Store credentials locally in `~/.vara-trading-agent/.env`.
 6. Use separate withdrawal keys only if API withdrawal is explicitly enabled by the user.
+
+The agent may create `~/.vara-trading-agent/.env` and `~/.vara-trading-agent/onboarding.json` during setup. These are user-home config files, not project-local files. Do not call them just `.env` without the path.
 
 Gate.io-specific setup:
 

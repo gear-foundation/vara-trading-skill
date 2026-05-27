@@ -6,7 +6,7 @@ Use this skill when the user asks how to install or set up the local trading age
 
 ```bash
 npm install -g vara-trading-skill
-npx skills add https://github.com/gear-foundation/vara-trading-skill/tree/master/agent-starter -g --all -y
+npx skills add https://github.com/gear-foundation/vara-trading-skill/tree/master/skill-pack -g --all -y
 vara-agent init-config
 vara-agent onboarding interactive
 ```

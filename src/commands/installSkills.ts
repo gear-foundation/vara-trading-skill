@@ -13,9 +13,8 @@ const packageRoot = path.resolve(
   "..",
 );
 
-const sourceSkillFile = path.join(packageRoot, "SKILL.md");
-const sourceSkillsDir = path.join(packageRoot, "skills");
-const sourceAgentsDir = path.join(packageRoot, "agents");
+const sourceSkillPackDir = path.join(packageRoot, "skill-pack");
+const sourceSkillFile = path.join(sourceSkillPackDir, "SKILL.md");
 
 export async function installSkills(target: string, overwrite: boolean): Promise<void> {
   const normalizedTarget = parseTarget(target);
@@ -41,16 +40,9 @@ export async function installSkills(target: string, overwrite: boolean): Promise
       await fsp.rm(destination, { recursive: true, force: true });
     }
 
-    await fsp.mkdir(destination, { recursive: true });
-    await fsp.copyFile(sourceSkillFile, path.join(destination, "SKILL.md"));
-    await fsp.cp(sourceSkillsDir, path.join(destination, "skills"), {
+    await fsp.cp(sourceSkillPackDir, destination, {
       recursive: true,
     });
-    if (await pathExists(sourceAgentsDir)) {
-      await fsp.cp(sourceAgentsDir, path.join(destination, "agents"), {
-        recursive: true,
-      });
-    }
 
     installed.push({
       target: baseDir,
@@ -91,10 +83,6 @@ function skillTargetDirs(target: SkillTarget): string[] {
 async function assertSourceExists(): Promise<void> {
   if (!(await pathExists(sourceSkillFile))) {
     throw new Error(`Package SKILL.md not found: ${sourceSkillFile}`);
-  }
-
-  if (!(await pathExists(sourceSkillsDir))) {
-    throw new Error(`Package skills directory not found: ${sourceSkillsDir}`);
   }
 }
 

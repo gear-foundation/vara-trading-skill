@@ -13,10 +13,10 @@ npm install -g vara-trading-skill
 Install the agent skill pack from GitHub:
 
 ```bash
-npx skills add https://github.com/gear-foundation/vara-trading-skill/tree/master/agent-starter -g --all -y
+npx skills add https://github.com/gear-foundation/vara-trading-skill/tree/master/skill-pack -g --all -y
 ```
 
-The GitHub skill pack lives in `agent-starter/`, matching the layout used by `gear-foundation/vara-agent-network`.
+The GitHub skill pack lives in `skill-pack/`. The repository root is the npm/TypeScript CLI project.
 
 Then restart your agent session if it does not pick up newly installed skills immediately.
 

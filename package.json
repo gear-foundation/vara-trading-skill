@@ -18,10 +18,8 @@
   },
   "files": [
     "dist",
-    "skills",
-    "agents",
+    "skill-pack",
     "README.md",
-    "SKILL.md",
     ".env.example"
   ],
   "scripts": {

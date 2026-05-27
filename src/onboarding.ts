@@ -693,6 +693,15 @@ function renderModeInstructions(state: OnboardingState): string {
 }
 
 export function getCexSetupInstructionLines(integration?: string): string[] {
+  const selectedIntegrations = parseActiveCexIntegrationsOrEmpty(integration);
+
+  if (selectedIntegrations.length > 1) {
+    return selectedIntegrations.flatMap((selectedIntegration, index) => [
+      ...(index > 0 ? [""] : []),
+      ...getCexSetupInstructionLines(selectedIntegration),
+    ]);
+  }
+
   if (integration === "gateio") {
     return [
       "To connect your Gate.io account:",
@@ -1069,6 +1078,18 @@ function parseActiveCexIntegrations(value: string): ActiveCexIntegration[] {
   }
 
   return uniqueActiveCexIntegrations(integrations);
+}
+
+function parseActiveCexIntegrationsOrEmpty(value: string | undefined): ActiveCexIntegration[] {
+  if (!value) {
+    return [];
+  }
+
+  try {
+    return parseActiveCexIntegrations(value);
+  } catch {
+    return [];
+  }
 }
 
 function normalizeActiveCexIntegration(value: string): ActiveCexIntegration | undefined {

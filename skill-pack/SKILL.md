@@ -234,6 +234,8 @@ MEXC_API_SECRET=<paste MEXC Secret Key here>
 
 When pausing for the user to finish exchange setup, show the selected exchange field names such as `MEXC_API_KEY`, `MEXC_API_SECRET`, `GATEIO_API_KEY`, and `GATEIO_API_SECRET`. Do not ask the user to paste key values into chat. Do not add old withdrawal-disabled wording to the MEXC or Gate.io setup checklist; withdrawal setup is a separate explicit opt-in flow.
 
+If the user chooses both MEXC and Gate.io, show the full MEXC setup block and the full Gate.io setup block before asking the user to confirm the checklist. Do not replace the exchange-specific instructions with a short generic checklist.
+
 Recommend IP whitelist when a fixed IP is available, trading limits, a separate subaccount, and keeping only funds the user is willing to trade.
 
 Risk limits must list every live-tradable pair explicitly, for example `VARA/USDT,USDC/USDT`. The agent must not place a live order for a pair outside the configured allowed pairs.

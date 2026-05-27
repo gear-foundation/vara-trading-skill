@@ -421,12 +421,18 @@ function printCexIntegrationChoice(): void {
 
 function printCexInstructions(): void {
   const state = readOnboardingState();
+  const integrations = getSelectedCexIntegrations(state);
 
   console.log("Step 2 - Connect Exchange API");
   console.log("");
-  getCexSetupInstructionLines(state.integration).forEach((line) => {
-    console.log(line);
-  });
+  integrations
+    .flatMap((integration, index) => [
+      ...(index > 0 ? [""] : []),
+      ...getCexSetupInstructionLines(integration),
+    ])
+    .forEach((line) => {
+      console.log(line);
+    });
   console.log("");
 }
 

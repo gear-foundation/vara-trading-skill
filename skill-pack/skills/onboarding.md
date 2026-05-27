@@ -72,6 +72,8 @@ GATEIO_API_SECRET=<paste Gate.io Secret Key here>
 
 Do not ask the user to paste key values into chat. Do not add old withdrawal-disabled wording to the MEXC or Gate.io setup checklist; withdrawal setup is a separate explicit opt-in flow.
 
+If the user chooses both MEXC and Gate.io, show the full setup instructions for both exchanges before asking the user to confirm the checklist. Do not summarize them as a short generic checklist.
+
 ## Safety
 
 - Trading API keys must have read and spot trade permissions only.

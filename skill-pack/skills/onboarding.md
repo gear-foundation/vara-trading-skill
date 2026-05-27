@@ -26,7 +26,7 @@ At the risk warning step, show the full warning before asking for `1` or `2`:
 ```text
 This agent can analyze spot markets and execute CEX trades on MEXC and Gate.io after setup.
 
-Crypto trading is risky. Start with dry-run or small amounts. Do not put withdrawal permissions on trading API keys.
+Crypto trading is risky. Start with dry-run or small amounts.
 ```
 
 Use current-step output only as a fallback when interactive terminal control is unavailable:
@@ -59,7 +59,6 @@ The flow should be continuous until either the user cancels or the wizard reache
 ## Safety
 
 - Trading API keys must have read and spot trade permissions only.
-- Withdrawal permission must be disabled on trading keys.
 - Withdrawal keys are separate and require explicit opt-in configuration.
 - Credentials must be stored in `~/.vara-trading-agent/.env`.
 - Live trading requires onboarding to be ready and the user to explicitly request live execution.

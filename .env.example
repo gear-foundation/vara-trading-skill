@@ -19,7 +19,6 @@ VARA_AGENT_MAX_WITHDRAW_VARA=0
 
 # CEX trading API keys
 # Trading keys must have read + trade permissions only.
-# Withdrawal permission should be disabled for trading keys.
 
 MEXC_API_KEY=
 MEXC_API_SECRET=

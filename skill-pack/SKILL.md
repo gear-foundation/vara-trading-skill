@@ -49,7 +49,6 @@ If `vara-agent` is missing, stop and ask the user for permission to install it. 
 - When reporting setup files to the user, show full paths such as `~/.vara-trading-agent/.env` and `~/.vara-trading-agent/onboarding.json`.
 - If mentioning file mode `600`, explain it as owner-only read/write permissions.
 - Trading API keys must have read + trade permissions only.
-- Withdrawal permission must be disabled on trading API keys.
 - API withdrawals are available only as explicit opt-in high-risk actions.
 - Live API withdrawals require dedicated withdrawal API keys, local allowlists, per-asset limits, `--mode live`, `--address-confirmed`, and `--confirm-withdrawal`.
 - Dry-run mode must be preferred by default.
@@ -100,7 +99,7 @@ When the wizard is at `Step 0 - Welcome / Risk Warning`, show the full warning t
 ```text
 This agent can analyze spot markets and execute CEX trades on MEXC and Gate.io after setup.
 
-Crypto trading is risky. Start with dry-run or small amounts. Do not put withdrawal permissions on trading API keys.
+Crypto trading is risky. Start with dry-run or small amounts.
 ```
 
 The wizard may pause at the credentials step because the user must create exchange API keys and edit `~/.vara-trading-agent/.env` locally. After the user says the keys are saved, continue the wizard from the existing state with `vara-agent onboarding interactive`.
@@ -189,9 +188,8 @@ For CEX trading, explain that the user must:
 1. Log in to the exchange.
 2. Create a dedicated API key for this agent.
 3. Grant only the minimum read and trade permissions needed by that exchange.
-4. Never grant Withdraw / Withdrawal permission to trading keys.
-5. Store credentials locally in `~/.vara-trading-agent/.env`.
-6. Use separate withdrawal keys only if API withdrawal is explicitly enabled by the user.
+4. Store credentials locally in `~/.vara-trading-agent/.env`.
+5. Use separate withdrawal keys only if API withdrawal is explicitly enabled by the user.
 
 The agent may create `~/.vara-trading-agent/.env` and `~/.vara-trading-agent/onboarding.json` during setup. These are user-home config files, not project-local files. Do not call them just `.env` without the path.
 

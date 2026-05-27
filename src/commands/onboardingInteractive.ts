@@ -392,7 +392,7 @@ function printWelcome(): void {
   console.log("");
   console.log("This agent can analyze spot markets and execute CEX trades on MEXC and Gate.io after setup.");
   console.log("");
-  console.log("Crypto trading is risky. Start with dry-run or small amounts. Do not put withdrawal permissions on trading API keys.");
+  console.log("Crypto trading is risky. Start with dry-run or small amounts.");
 }
 
 function printChooseMode(): void {

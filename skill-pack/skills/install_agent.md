@@ -26,5 +26,4 @@ If the user installed only the npm package, `vara-agent install-skills` can copy
 - Never ask the user to paste API keys into chat.
 - Credentials must be saved locally in `~/.vara-trading-agent/.env`.
 - Trading API keys must have read and spot trade permissions only.
-- Withdrawal permission must be disabled on trading keys.
 - API withdrawals require separate withdrawal keys and explicit opt-in configuration.

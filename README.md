@@ -94,7 +94,7 @@ Edit:
 ~/.vara-trading-agent/.env
 ```
 
-Trading API keys must have read + trade permissions only. Withdrawal permissions should stay disabled on trading keys.
+Trading API keys must have read + trade permissions only.
 
 After CEX setup is complete:
 
@@ -220,10 +220,6 @@ Required permissions:
 
 - Read / View account data
 - Trade / Spot trading
-
-Trading API key forbidden permissions:
-
-- Withdraw / Withdrawal permission
 
 Withdrawal API key permissions:
 

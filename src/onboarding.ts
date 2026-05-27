@@ -376,7 +376,7 @@ export async function validateOnboardingSetup(): Promise<OnboardingState> {
     }
 
     notes.push(`Local API key and secret are present for ${formatCexIntegrationList(integrations)}.`);
-    notes.push("Could not verify trading-key permissions through API. Please confirm manually that Withdraw permission is disabled on trading keys.");
+    notes.push("Could not verify trading-key permissions through API. Please confirm manually that only the intended read and spot trading permissions are enabled.");
     notes.push("Fetch balances and market dry-run should be performed before any live order.");
   }
 
@@ -588,7 +588,7 @@ function renderWelcome(state: OnboardingState): string {
     "",
     "This agent can analyze spot markets and execute CEX trades on MEXC and Gate.io after setup.",
     "",
-    "Crypto trading is risky. Start with dry-run or small amounts. Do not put withdrawal permissions on trading API keys.",
+    "Crypto trading is risky. Start with dry-run or small amounts.",
     "",
     renderStateLine(state),
     "",
@@ -703,14 +703,12 @@ export function getCexSetupInstructionLines(integration?: string): string[] {
       "3. Open API Key Management.",
       "4. Create a new API key specifically for this agent.",
       "5. Enable only Read / View account data and Spot Trading.",
-      "6. Do NOT enable Withdraw permission.",
-      "7. Use IP whitelist if available.",
-      "8. Copy API Key and Secret Key into local settings, not into chat.",
+      "6. Use IP whitelist if available.",
+      "7. Copy API Key and Secret Key into local settings, not into chat.",
       "",
       "Safety checklist:",
       "[ ] I set a Fund Password in Security",
       "[ ] I created a separate Gate.io API key for this agent",
-      "[ ] Withdraw permission is disabled",
       "[ ] Only Read and Trade permissions are enabled",
       "[ ] I understand that trading is risky",
     ];
@@ -729,13 +727,11 @@ export function getCexSetupInstructionLines(integration?: string): string[] {
       "   - Trade",
       "   - View Order Details",
       "6. Link IP Address is optional. Enable it only if you have a stable IP address.",
-      "7. Do NOT enable Withdraw permission.",
-      "8. Copy API Key and Secret Key into local settings, not into chat.",
+      "7. Copy API Key and Secret Key into local settings, not into chat.",
       "",
       "Safety checklist:",
       "[ ] I created a separate MEXC API key for this agent",
       "[ ] Account Details, Trade, and View Order Details are enabled",
-      "[ ] Withdraw permission is disabled",
       "[ ] Link IP Address is configured or intentionally skipped",
       "[ ] I understand that trading is risky",
     ];
@@ -748,13 +744,11 @@ export function getCexSetupInstructionLines(integration?: string): string[] {
     "2. Open the exchange API key section.",
     "3. Create a new API key specifically for this agent.",
     "4. Enable only Read / View account data and Spot Trading.",
-    "5. Do NOT enable Withdraw permission.",
-    "6. Use IP whitelist if available.",
-    "7. Copy API Key and Secret Key into local settings, not into chat.",
+    "5. Use IP whitelist if available.",
+    "6. Copy API Key and Secret Key into local settings, not into chat.",
     "",
     "Safety checklist:",
     "[ ] I created a separate API key for this agent",
-    "[ ] Withdraw permission is disabled",
     "[ ] Only Read and Trade permissions are enabled",
     "[ ] I understand that trading is risky",
   ];
@@ -852,7 +846,7 @@ function renderValidateSetup(state: OnboardingState): string {
     "Step 5 - Run Test / Validation",
     "",
     state.mode === "cex_exchange"
-      ? "CEX validation checks local API credential presence and reminds you to confirm trading-key withdrawal permissions manually if the API cannot expose them."
+      ? "CEX validation checks local API credential presence and reminds you to confirm the intended read and spot trading permissions."
       : state.mode === "instant_swap"
         ? "Exolix validation checks configured swap parameters. Provider quote validation will arrive with the Exolix adapter."
         : "Paper validation checks virtual portfolio configuration.",

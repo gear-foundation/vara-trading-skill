@@ -1,6 +1,6 @@
 {
   "name": "vara-trading-skill",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Local CLI and agent skill pack for CEX spot trading with VARA-first examples",
   "type": "module",
   "license": "MIT",

@@ -13,11 +13,15 @@ If you mention file mode `600`, explain that it means only the local OS user can
 
 ## Command
 
+Preferred continuous setup:
+
 ```bash
 vara-agent onboarding interactive
 ```
 
-For the current step only:
+The agent should keep this command running and answer prompts by sending the user's selected option to the CLI. For example, if the user says "I want trade on MEXC", choose the MEXC option in the interactive wizard and continue to the next prompt instead of stopping and asking the user to say a magic phrase.
+
+Use current-step output only as a fallback when interactive terminal control is unavailable:
 
 ```bash
 vara-agent onboarding
@@ -41,6 +45,8 @@ vara-agent onboarding --json
 8. Dry-run
 9. Final confirmation
 10. Ready
+
+The flow should be continuous until either the user cancels or the wizard reaches an external setup task, such as creating API keys and saving them in `~/.vara-trading-agent/.env`.
 
 ## Safety
 

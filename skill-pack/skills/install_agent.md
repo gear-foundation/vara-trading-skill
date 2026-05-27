@@ -17,6 +17,8 @@ The user must complete onboarding before live trading.
 
 `vara-agent init-config` creates `~/.vara-trading-agent/.env`, not a project-local `./trading-agent` directory. If the agent reports permissions, explain that mode `600` means owner-only read/write access.
 
+After installation, the agent should run `vara-agent onboarding interactive` as a continuous wizard and keep it open while the user answers prompts. Do not switch to one-command-per-step onboarding unless interactive terminal control is unavailable.
+
 If the user installed only the npm package, `vara-agent install-skills` can copy the packaged skill files into Codex-style local skill directories.
 
 ## Safety

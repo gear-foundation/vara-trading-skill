@@ -35,6 +35,8 @@ vara-agent init-config
 vara-agent onboarding interactive
 ```
 
+The agent should keep the interactive wizard running and answer its prompts from the user's choices. It should not turn onboarding into separate one-command-per-step messages unless interactive terminal control is unavailable.
+
 `init-config` creates `~/.vara-trading-agent/.env` if it does not exist. The agent may create the file, start onboarding, and validate setup, but it must never ask the user to paste API keys into chat. When credentials are needed, the user edits `~/.vara-trading-agent/.env` locally.
 
 `npm install -g` installs the executable CLI. `npx skills add ...` installs `SKILL.md` and the recipe files into supported agent runtimes so the agent can discover `vara-trading-skill`.
@@ -55,7 +57,7 @@ The setup starts with the step-by-step onboarding wizard. The agent must explain
 vara-agent onboarding interactive
 ```
 
-For non-interactive step-by-step output:
+For non-interactive current-step output only when needed:
 
 ```bash
 vara-agent onboarding

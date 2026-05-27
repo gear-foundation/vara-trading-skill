@@ -84,6 +84,19 @@ Use:
 vara-agent <command>
 ```
 
+## Agent-Led Interactive Setup
+
+For first-time setup, prefer one continuous interactive session:
+
+```bash
+vara-agent init-config
+vara-agent onboarding interactive
+```
+
+The agent should keep `vara-agent onboarding interactive` running, show the user the current prompt/options, accept the user's natural-language choice, and send the matching numeric answer to the CLI. Do not replace the interactive wizard with separate state commands such as `onboarding choose-integration` unless the user asks for non-interactive mode or the runtime cannot keep an interactive process open.
+
+The wizard may pause at the credentials step because the user must create exchange API keys and edit `~/.vara-trading-agent/.env` locally. After the user says the keys are saved, continue the wizard from the existing state with `vara-agent onboarding interactive`.
+
 Examples:
 
 ```bash

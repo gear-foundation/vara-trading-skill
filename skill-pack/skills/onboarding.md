@@ -21,6 +21,14 @@ vara-agent onboarding interactive
 
 The agent should keep this command running and answer prompts by sending the user's selected option to the CLI. For example, if the user says "I want trade on MEXC", choose the MEXC option in the interactive wizard and continue to the next prompt instead of stopping and asking the user to say a magic phrase.
 
+At the risk warning step, show the full warning before asking for `1` or `2`:
+
+```text
+This agent can analyze spot markets and execute CEX trades on MEXC and Gate.io after setup.
+
+Crypto trading is risky. Start with dry-run or small amounts. Do not put withdrawal permissions on trading API keys.
+```
+
 Use current-step output only as a fallback when interactive terminal control is unavailable:
 
 ```bash

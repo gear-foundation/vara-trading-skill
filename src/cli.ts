@@ -24,7 +24,7 @@ const program = new Command();
 program
   .name("vara-agent")
   .description("Local spot trading execution CLI")
-  .version("0.1.0");
+  .version("0.1.1");
 
 registerOnboardingCommand(program);
 

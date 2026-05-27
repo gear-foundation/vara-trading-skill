@@ -593,7 +593,7 @@ function renderWelcome(state: OnboardingState): string {
     renderStateLine(state),
     "",
     "Continue:",
-    "npm run dev -- onboarding understand",
+    "vara-agent onboarding understand",
   ].join("\n");
 }
 

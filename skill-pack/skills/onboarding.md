@@ -63,7 +63,14 @@ MEXC_API_KEY=<paste MEXC API Key / Access Key here>
 MEXC_API_SECRET=<paste MEXC Secret Key here>
 ```
 
-Do not ask the user to paste key values into chat. Do not add old withdrawal-disabled wording to the MEXC setup checklist; withdrawal setup is a separate explicit opt-in flow.
+When the wizard pauses for Gate.io credentials, make the local fields explicit:
+
+```bash
+GATEIO_API_KEY=<paste Gate.io API Key here>
+GATEIO_API_SECRET=<paste Gate.io Secret Key here>
+```
+
+Do not ask the user to paste key values into chat. Do not add old withdrawal-disabled wording to the MEXC or Gate.io setup checklist; withdrawal setup is a separate explicit opt-in flow.
 
 ## Safety
 

@@ -205,7 +205,21 @@ Create the key in the exchange API key section.
 Gate.io setup:
 
 - Open Security and set a Fund Password first
+- It protects fund security; trading does not require fund password input by default
 - Open API Key Management
+- Create a dedicated API key for this agent
+- Enable Read / View account data
+- Enable Spot Trading
+- IP whitelist is optional
+- Copy the API Key and Secret Key shown by Gate.io
+- Open `~/.vara-trading-agent/.env` and fill these exact lines:
+
+```bash
+GATEIO_API_KEY=<paste Gate.io API Key here>
+GATEIO_API_SECRET=<paste Gate.io Secret Key here>
+```
+
+- Secret Key may be shown only once; never paste it into chat
 
 MEXC setup:
 

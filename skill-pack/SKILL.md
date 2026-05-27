@@ -199,6 +199,19 @@ Gate.io-specific setup:
 - It protects fund security.
 - Trading does not require fund password input by default.
 - Open API Key Management.
+- Create a dedicated API key for this agent.
+- Enable Read / View account data.
+- Enable Spot Trading.
+- IP whitelist is optional.
+- Copy the API Key and Secret Key shown by Gate.io.
+- Open `~/.vara-trading-agent/.env` and fill these exact lines:
+
+```bash
+GATEIO_API_KEY=<paste Gate.io API Key here>
+GATEIO_API_SECRET=<paste Gate.io Secret Key here>
+```
+
+- Secret Key may be shown only once; never paste it into chat.
 
 MEXC-specific setup:
 
@@ -219,7 +232,7 @@ MEXC_API_SECRET=<paste MEXC Secret Key here>
 
 - Secret Key may be shown only once; never paste it into chat.
 
-When pausing for the user to finish MEXC setup, show the `MEXC_API_KEY` and `MEXC_API_SECRET` field names. Do not ask the user to paste key values into chat. Do not add old withdrawal-disabled wording to the MEXC setup checklist; withdrawal setup is a separate explicit opt-in flow.
+When pausing for the user to finish exchange setup, show the selected exchange field names such as `MEXC_API_KEY`, `MEXC_API_SECRET`, `GATEIO_API_KEY`, and `GATEIO_API_SECRET`. Do not ask the user to paste key values into chat. Do not add old withdrawal-disabled wording to the MEXC or Gate.io setup checklist; withdrawal setup is a separate explicit opt-in flow.
 
 Recommend IP whitelist when a fixed IP is available, trading limits, a separate subaccount, and keeping only funds the user is willing to trade.
 

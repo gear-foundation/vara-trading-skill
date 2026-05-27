@@ -204,10 +204,14 @@ MEXC-specific setup:
 
 - Click the account icon.
 - Select API Management.
+- Create a dedicated API key for this agent.
 - Enable Account Details.
 - Enable Trade.
 - Enable View Order Details.
 - Link IP Address is optional.
+- Copy the API Key / Access Key and Secret Key shown by MEXC.
+- Save them locally in `~/.vara-trading-agent/.env` as `MEXC_API_KEY` and `MEXC_API_SECRET`.
+- Secret Key may be shown only once; never paste it into chat.
 
 Recommend IP whitelist when a fixed IP is available, trading limits, a separate subaccount, and keeping only funds the user is willing to trade.
 

@@ -547,10 +547,10 @@ function printNextActions(state: ReturnType<typeof readOnboardingState>): void {
     integrations.forEach((provider) => {
       console.log("");
       console.log(`${formatCexIntegrationList([provider])}:`);
-      console.log(`- Check market: npm run dev -- check-market --provider ${provider} --symbol VARA/USDT`);
-      console.log(`- Inspect order book: npm run dev -- orderbook --provider ${provider} --symbol VARA/USDT --limit 10`);
-      console.log(`- Fetch ticker: npm run dev -- ticker --provider ${provider} --symbol VARA/USDT`);
-      console.log(`- Dry-run any allowed pair: npm run dev -- buy --provider ${provider} --symbol VARA/USDT --quote-amount 10 --mode dry-run`);
+      console.log(`- Check market: vara-agent check-market --provider ${provider} --symbol VARA/USDT`);
+      console.log(`- Inspect order book: vara-agent orderbook --provider ${provider} --symbol VARA/USDT --limit 10`);
+      console.log(`- Fetch ticker: vara-agent ticker --provider ${provider} --symbol VARA/USDT`);
+      console.log(`- Dry-run any allowed pair: vara-agent buy --provider ${provider} --symbol VARA/USDT --quote-amount 10 --mode dry-run`);
     });
     console.log("Live trading remains blocked unless the user explicitly requests a live trade.");
     return;
@@ -566,9 +566,9 @@ function printNextActions(state: ReturnType<typeof readOnboardingState>): void {
 
   console.log("Next suggested actions:");
   console.log("1. Fetch routes for the simulated trade:");
-  console.log("   npm run dev -- routes --side buy --quote USDT --amount 20");
+  console.log("   vara-agent routes --side buy --quote USDT --amount 20");
   console.log("2. Fetch market data from a selected exchange:");
-  console.log("   npm run dev -- ticker --provider mexc --symbol VARA/USDT");
+  console.log("   vara-agent ticker --provider mexc --symbol VARA/USDT");
   console.log("3. Run simulated decisions only. No real funds are used in Paper Trading.");
 }
 

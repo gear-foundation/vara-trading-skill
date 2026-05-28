@@ -7,10 +7,14 @@ export async function balance(provider: CexProvider): Promise<void> {
   const exchange = createExchange(provider);
   const adapter = new CcxtAdapter(exchange, provider);
 
-  const result = await adapter.balance();
+  const result = await adapter.balanceSummary();
 
   printOk({
     provider,
-    balance: result,
+    summary: {
+      non_zero_count: result.non_zero_count,
+      message: result.message ?? "Showing non-zero balances only.",
+    },
+    balances: result.balances,
   });
 }

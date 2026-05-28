@@ -108,6 +108,7 @@ vara-agent onboarding final-confirm --confirm
 
 `--allowed-assets` is a comma-separated list of asset tickers, for example `VARA,USDT,USDC`.
 `--allowed-pairs` is a comma-separated list of market symbols, for example `VARA/USDT,USDC/USDT`.
+`onboarding validate` loads markets and fetches balances to test the configured API credentials.
 
 ## Run
 
@@ -127,6 +128,8 @@ vara-agent limit-buy --provider mexc --symbol VARA/USDT --quote-amount 2 --price
 vara-agent limit-sell --provider mexc --symbol VARA/USDT --base-amount 1000 --price 0.000604 --mode dry-run
 vara-agent sell --provider mexc --symbol USDC/USDT --base-amount 10 --mode dry-run
 ```
+
+`balance` returns a compact summary of non-zero balances only.
 
 ## Withdrawal Flow
 

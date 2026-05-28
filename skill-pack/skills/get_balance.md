@@ -12,6 +12,10 @@ vara-agent balance --provider "{{provider}}"
 
 - `provider`: mexc or gateio
 
+## Output
+
+Returns only non-zero balances as a compact summary. Do not present raw CCXT balance output unless the user explicitly asks for debugging details.
+
 ## Safety
 
 - Do not request API keys in chat.

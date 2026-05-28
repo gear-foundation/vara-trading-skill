@@ -56,6 +56,8 @@ vara-agent onboarding --json
 
 The flow should be continuous until either the user cancels or the wizard reaches an external setup task, such as creating API keys and saving them in `~/.vara-trading-agent/.env`.
 
+Validation must test configured CEX API credentials by loading markets and fetching balances. Do not describe validation as only checking that env variables exist.
+
 When the wizard pauses for MEXC credentials, make the local fields explicit:
 
 ```bash

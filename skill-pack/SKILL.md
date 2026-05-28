@@ -104,6 +104,8 @@ Crypto trading is risky. Start with dry-run or small amounts.
 
 The wizard may pause at the credentials step because the user must create exchange API keys and edit `~/.vara-trading-agent/.env` locally. After the user says the keys are saved, continue the wizard from the existing state with `vara-agent onboarding interactive`.
 
+Onboarding validation must load markets and fetch balances for each selected CEX to test configured API credentials. Balance output should be presented as non-zero balances only, not raw CCXT account payloads.
+
 Examples:
 
 ```bash

@@ -5,6 +5,8 @@ import path from "node:path";
 import { Decimal } from "decimal.js";
 
 import { getEnv } from "./config.js";
+import { CcxtAdapter } from "./exchanges/ccxtAdapter.js";
+import { createExchange } from "./exchanges/exchangeFactory.js";
 
 export type TradingMode =
   | "paper_trading"
@@ -375,9 +377,29 @@ export async function validateOnboardingSetup(): Promise<OnboardingState> {
       );
     }
 
-    notes.push(`Local API key and secret are present for ${formatCexIntegrationList(integrations)}.`);
-    notes.push("Could not verify trading-key permissions through API. Please confirm manually that only the intended read and spot trading permissions are enabled.");
-    notes.push("Fetch balances and market dry-run should be performed before any live order.");
+    for (const integration of integrations) {
+      const label = formatCexIntegration(integration);
+      const adapter = new CcxtAdapter(createExchange(integration), integration);
+
+      try {
+        const markets = await adapter.marketsSummary();
+        const balance = await adapter.balanceSummary();
+
+        notes.push(
+          `${label}: markets loaded through CCXT (${String(markets.markets_count)} markets).`,
+        );
+        notes.push(
+          `${label}: API credentials authenticated; balances are readable (${balance.non_zero_count} non-zero assets).`,
+        );
+      } catch (error) {
+        throw new Error(
+          `CEX validation failed for ${label}: API credentials are present but loadMarkets/fetchBalance failed. ${errorMessage(error)}`,
+        );
+      }
+    }
+
+    notes.push("Spot trading permission cannot be safely verified without placing an order. Confirm manually that the intended spot trading permission is enabled.");
+    notes.push("Run a dry-run order before any live order.");
   }
 
   if (state.mode === "instant_swap") {
@@ -468,7 +490,7 @@ export function assertCexLiveTradingReady(
 
   if (state.mode !== "cex_exchange" || state.status !== "ready") {
     throw new Error(
-      "Live CEX trading is blocked until onboarding is ready. Run: npm run dev -- onboarding",
+      "Live CEX trading is blocked until onboarding is ready. Run: vara-agent onboarding",
     );
   }
 
@@ -605,7 +627,7 @@ function renderChooseMode(state: OnboardingState): string {
     "Other modes remain planned for later and are kept in code as future integrations.",
     "",
     "Current active mode:",
-    "npm run dev -- onboarding choose-mode --mode cex_exchange",
+    "vara-agent onboarding choose-mode --mode cex_exchange",
   ].join("\n");
 }
 
@@ -621,9 +643,9 @@ function renderChooseIntegration(state: OnboardingState): string {
       "3. Both MEXC and Gate.io",
       "",
       "Choose:",
-      "npm run dev -- onboarding choose-integration --integration mexc",
-      "npm run dev -- onboarding choose-integration --integration gateio",
-      "npm run dev -- onboarding choose-integration --integration both",
+      "vara-agent onboarding choose-integration --integration mexc",
+      "vara-agent onboarding choose-integration --integration gateio",
+      "vara-agent onboarding choose-integration --integration both",
     ].join("\n");
   }
 
@@ -637,7 +659,7 @@ function renderChooseIntegration(state: OnboardingState): string {
       "2. Other swap provider - planned",
       "",
       "Choose:",
-      "npm run dev -- onboarding choose-integration --integration exolix",
+      "vara-agent onboarding choose-integration --integration exolix",
     ].join("\n");
   }
 
@@ -658,7 +680,7 @@ function renderModeInstructions(state: OnboardingState): string {
       ]),
       "",
       "After you confirm every checkbox:",
-      "npm run dev -- onboarding checklist --confirm",
+      "vara-agent onboarding checklist --confirm",
     ].join("\n");
   }
 
@@ -678,7 +700,7 @@ function renderModeInstructions(state: OnboardingState): string {
       "[ ] I am not using this to bypass KYC/AML or sanctions checks",
       "",
       "After you confirm every checkbox:",
-      "npm run dev -- onboarding checklist --confirm",
+      "vara-agent onboarding checklist --confirm",
     ].join("\n");
   }
 
@@ -688,7 +710,7 @@ function renderModeInstructions(state: OnboardingState): string {
     "Paper Trading uses no API key and no real funds.",
     "",
     "Configure virtual portfolio parameters:",
-    "npm run dev -- onboarding configure-paper --starting-balance 10000 --base-currency USDT --allowed-assets VARA,ETH,BTC,USDT --strategy-type spot_simulation --timeframe 1h",
+    "vara-agent onboarding configure-paper --starting-balance 10000 --base-currency USDT --allowed-assets VARA,ETH,BTC,USDT --strategy-type spot_simulation --timeframe 1h",
   ].join("\n");
 }
 
@@ -790,7 +812,7 @@ function renderSelectExecutionMode(_state: OnboardingState): string {
     "   Advanced planned mode. Use only with a separate limited-balance trading wallet.",
     "",
     "First release scope supports Manual Deposit Mode:",
-    "npm run dev -- onboarding select-execution-mode --mode manual_deposit",
+    "vara-agent onboarding select-execution-mode --mode manual_deposit",
   ].join("\n");
 }
 
@@ -813,7 +835,7 @@ function renderConnectCredentials(state: OnboardingState): string {
     "The agent must never receive API keys in chat.",
     "",
     "After credentials are saved locally:",
-    "npm run dev -- onboarding connect --credentials-local",
+    "vara-agent onboarding connect --credentials-local",
   ].join("\n");
 }
 
@@ -834,7 +856,7 @@ function renderConfigureTradeParams(state: OnboardingState): string {
       "- memoOrTag, if required",
       "",
       "Example:",
-      "npm run dev -- onboarding configure-swap --coin-from USDT --network-from TRON --coin-to VARA --network-to VARA --amount 100 --rate-type fixed --withdrawal-address <address> --refund-address <address>",
+      "vara-agent onboarding configure-swap --coin-from USDT --network-from TRON --coin-to VARA --network-to VARA --amount 100 --rate-type fixed --withdrawal-address <address> --refund-address <address>",
     ].join("\n");
   }
 
@@ -842,7 +864,7 @@ function renderConfigureTradeParams(state: OnboardingState): string {
     "Step 4 - Configure Paper Trading",
     "",
     "Example:",
-    "npm run dev -- onboarding configure-paper --starting-balance 10000 --base-currency USDT --allowed-assets VARA,ETH,BTC,USDT --strategy-type spot_simulation --timeframe 1h",
+    "vara-agent onboarding configure-paper --starting-balance 10000 --base-currency USDT --allowed-assets VARA,ETH,BTC,USDT --strategy-type spot_simulation --timeframe 1h",
   ].join("\n");
 }
 
@@ -859,7 +881,7 @@ function renderConfigureRiskLimits(_state: OnboardingState): string {
     "- Max slippage",
     "",
     "Example:",
-    "npm run dev -- onboarding configure-risk --max-trade-size-usd 50 --allowed-assets VARA,USDT,USDC --allowed-pairs VARA/USDT,USDC/USDT --max-slippage-percent 1",
+    "vara-agent onboarding configure-risk --max-trade-size-usd 50 --allowed-assets VARA,USDT,USDC --allowed-pairs VARA/USDT,USDC/USDT --max-slippage-percent 1",
   ].join("\n");
 }
 
@@ -868,13 +890,13 @@ function renderValidateSetup(state: OnboardingState): string {
     "Step 5 - Run Test / Validation",
     "",
     state.mode === "cex_exchange"
-      ? "CEX validation checks local API credential presence and reminds you to confirm the intended read and spot trading permissions."
+      ? "CEX validation loads markets and fetches balances to test API credentials before the agent can be ready."
       : state.mode === "instant_swap"
         ? "Exolix validation checks configured swap parameters. Provider quote validation will arrive with the Exolix adapter."
         : "Paper validation checks virtual portfolio configuration.",
     "",
     "Run:",
-    "npm run dev -- onboarding validate",
+    "vara-agent onboarding validate",
   ].join("\n");
 }
 
@@ -889,7 +911,7 @@ function renderDryRun(state: OnboardingState): string {
         : "Create the virtual portfolio and run the first simulated decision.",
     "",
     "Mark dry-run completed:",
-    "npm run dev -- onboarding dry-run",
+    "vara-agent onboarding dry-run",
   ].join("\n");
 }
 
@@ -900,7 +922,7 @@ function renderFinalConfirmation(state: OnboardingState): string {
     renderSummary(state),
     "",
     "Confirm only if everything is correct:",
-    "npm run dev -- onboarding final-confirm --confirm",
+    "vara-agent onboarding final-confirm --confirm",
     "",
     "Or go back by changing mode/integration/configuration commands.",
   ].join("\n");
@@ -977,13 +999,17 @@ function assertTradeSizeAllowedForLiveTrading(
 
   if (max.gt(0) && amount.gt(max)) {
     throw new Error(
-      `Live CEX trading is blocked: estimated trade size ${amount.toString()} exceeds max trade size ${max.toString()}`,
+      `Live CEX trading is blocked: estimated quote value ${amount.toString()} USD exceeds configured max trade size ${max.toString()} USD from onboarding risk limits. Use a quote amount at or below ${max.toString()} USD, or update the local risk limit before live trading.`,
     );
   }
 }
 
 function normalizeSymbol(symbol: string): string {
   return symbol.trim().toUpperCase();
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 function nextReadyActions(state: OnboardingState): string {
@@ -1004,10 +1030,10 @@ function nextReadyActions(state: OnboardingState): string {
       ...integrations.flatMap((provider) => [
         "",
         `${formatCexIntegration(provider)}:`,
-        `- Check market: npm run dev -- check-market --provider ${provider} --symbol VARA/USDT`,
-        `- Inspect order book: npm run dev -- orderbook --provider ${provider} --symbol VARA/USDT --limit 10`,
-        `- Fetch ticker: npm run dev -- ticker --provider ${provider} --symbol VARA/USDT`,
-        `- Dry-run any allowed pair: npm run dev -- buy --provider ${provider} --symbol VARA/USDT --quote-amount 10 --mode dry-run`,
+        `- Check market: vara-agent check-market --provider ${provider} --symbol VARA/USDT`,
+        `- Inspect order book: vara-agent orderbook --provider ${provider} --symbol VARA/USDT --limit 10`,
+        `- Fetch ticker: vara-agent ticker --provider ${provider} --symbol VARA/USDT`,
+        `- Dry-run any allowed pair: vara-agent buy --provider ${provider} --symbol VARA/USDT --quote-amount 10 --mode dry-run`,
       ]),
       "Live trading remains blocked unless the user explicitly requests a live trade.",
     ].join("\n");
@@ -1016,9 +1042,9 @@ function nextReadyActions(state: OnboardingState): string {
   return [
     "Next suggested actions:",
     "1. Fetch routes for the simulated trade:",
-    "   npm run dev -- routes --side buy --quote USDT --amount 20",
+    "   vara-agent routes --side buy --quote USDT --amount 20",
     "2. Fetch market data from a selected exchange:",
-    "   npm run dev -- ticker --provider mexc --symbol VARA/USDT",
+    "   vara-agent ticker --provider mexc --symbol VARA/USDT",
     "3. Run simulated decisions only. No real funds are used in Paper Trading.",
   ].join("\n");
 }

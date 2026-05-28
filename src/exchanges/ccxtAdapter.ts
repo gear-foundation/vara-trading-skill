@@ -26,6 +26,20 @@ export type NormalizedOrder = {
   fee: unknown;
 };
 
+export type NormalizedBalance = {
+  asset: string;
+  free: string;
+  used: string;
+  total: string;
+};
+
+export type BalanceSummary = {
+  provider: string;
+  non_zero_count: number;
+  balances: NormalizedBalance[];
+  message?: string;
+};
+
 export class CcxtAdapter {
   constructor(
     private readonly exchange: Exchange,
@@ -50,6 +64,20 @@ export class CcxtAdapter {
 
   async balance(): Promise<unknown> {
     return await this.exchange.fetchBalance();
+  }
+
+  async balanceSummary(): Promise<BalanceSummary> {
+    const balance = await this.exchange.fetchBalance();
+    return normalizeBalance(balance, this.provider);
+  }
+
+  async marketsSummary(): Promise<Record<string, unknown>> {
+    const markets = await this.exchange.loadMarkets();
+
+    return {
+      provider: this.provider,
+      markets_count: Object.keys(markets).length,
+    };
   }
 
   async ticker(symbol: string): Promise<unknown> {
@@ -213,7 +241,9 @@ export class CcxtAdapter {
     const amount = new Decimal(quoteAmount);
 
     if (max.gt(0) && amount.gt(max)) {
-      throw new Error(`Order amount ${quoteAmount} exceeds max limit ${max.toString()}`);
+      throw new Error(
+        `Order quote amount ${amount.toString()} exceeds VARA_AGENT_MAX_ORDER_USD=${max.toString()} USD. Lower the quote amount or update the local risk limit in ~/.vara-trading-agent/.env.`,
+      );
     }
   }
 
@@ -434,6 +464,90 @@ function stringOrNull(value: unknown): string | null {
   }
 
   return String(value);
+}
+
+function normalizeBalance(rawBalance: unknown, provider: string): BalanceSummary {
+  const balance = asRecord(rawBalance);
+  const free = asRecord(balance.free);
+  const used = asRecord(balance.used);
+  const total = asRecord(balance.total);
+  const assets = new Set<string>([
+    ...Object.keys(free),
+    ...Object.keys(used),
+    ...Object.keys(total),
+  ]);
+
+  for (const [asset, value] of Object.entries(balance)) {
+    if (isBalanceMetadataKey(asset)) {
+      continue;
+    }
+
+    const assetBalance = asRecord(value);
+
+    if ("free" in assetBalance || "used" in assetBalance || "total" in assetBalance) {
+      assets.add(asset);
+    }
+  }
+
+  const balances = [...assets]
+    .map((asset) => {
+      const assetBalance = asRecord(balance[asset]);
+
+      return {
+        asset,
+        free: decimalOrZero(free[asset] ?? assetBalance.free),
+        used: decimalOrZero(used[asset] ?? assetBalance.used),
+        total: decimalOrZero(total[asset] ?? assetBalance.total),
+      };
+    })
+    .filter(hasNonZeroBalance)
+    .sort((a, b) => a.asset.localeCompare(b.asset));
+
+  return {
+    provider,
+    non_zero_count: balances.length,
+    balances,
+    ...(balances.length === 0
+      ? { message: "No non-zero balances found." }
+      : {}),
+  };
+}
+
+function asRecord(value: unknown): Record<string, unknown> {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return {};
+  }
+
+  return value as Record<string, unknown>;
+}
+
+function isBalanceMetadataKey(key: string): boolean {
+  return [
+    "free",
+    "used",
+    "total",
+    "info",
+    "timestamp",
+    "datetime",
+  ].includes(key);
+}
+
+function hasNonZeroBalance(balance: NormalizedBalance): boolean {
+  return [balance.free, balance.used, balance.total].some((value) =>
+    new Decimal(value).abs().gt(0),
+  );
+}
+
+function decimalOrZero(value: unknown): string {
+  if (value === undefined || value === null || value === "") {
+    return "0";
+  }
+
+  try {
+    return new Decimal(String(value)).toString();
+  } catch {
+    return "0";
+  }
 }
 
 function decimalOrNull(value: unknown): string | null {

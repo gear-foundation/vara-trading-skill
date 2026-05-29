@@ -115,7 +115,7 @@ vara-agent onboarding final-confirm --confirm
 ```bash
 vara-agent init-config
 vara-agent onboarding
-vara-agent routes --side buy --quote USDT --amount 20
+vara-agent routes --side buy --asset VARA --quote USDT --amount 20
 vara-agent check-market --provider mexc --symbol VARA/USDT
 vara-agent ticker --provider mexc --symbol VARA/USDT
 vara-agent orderbook --provider mexc --symbol VARA/USDT --limit 10

@@ -29,6 +29,32 @@ test("routes command returns JSON without API credentials", () => {
   );
 });
 
+test("routes command supports non-VARA assets without API credentials", () => {
+  const output = runCli([
+    "routes",
+    "--side",
+    "sell",
+    "--asset",
+    "USDC",
+    "--quote",
+    "USDT",
+    "--amount",
+    "20",
+  ]);
+  const parsed = JSON.parse(output) as {
+    ok: boolean;
+    asset: string;
+    routes: Array<{ provider: string; asset: string; symbol: string }>;
+  };
+
+  assert.equal(parsed.ok, true);
+  assert.equal(parsed.asset, "USDC");
+  assert.deepEqual(
+    parsed.routes.map((route) => `${route.provider}:${route.asset}:${route.symbol}`),
+    ["mexc:USDC:USDC/USDT", "gateio:USDC:USDC/USDT"],
+  );
+});
+
 test("onboarding command prints installed CLI commands", () => {
   const output = runCli(["onboarding"]);
 

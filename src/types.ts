@@ -21,10 +21,11 @@ export type TradeSide = "buy" | "sell";
 
 export type ExecutionMode = "dry-run" | "live";
 
-export type VaraRoute =
+export type TradingRoute =
   | {
       type: "cex_trading";
       provider: CexProvider;
+      asset: string;
       symbol: string;
       side: TradeSide;
       quote: string;
@@ -35,7 +36,7 @@ export type VaraRoute =
       type: "instant_swap";
       provider: "exolix";
       fromAsset: string;
-      toAsset: "VARA";
+      toAsset: string;
       requiresWalletAddress: true;
       requiresDeposit: true;
       notes?: string[];
@@ -44,8 +45,10 @@ export type VaraRoute =
       type: "fiat_onramp";
       provider: "banxa";
       fiat: string;
-      crypto: "VARA";
+      crypto: string;
       requiresWalletAddress: true;
       returnsCheckoutUrl: true;
       notes?: string[];
     };
+
+export type VaraRoute = TradingRoute;

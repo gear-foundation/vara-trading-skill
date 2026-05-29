@@ -566,7 +566,7 @@ function printNextActions(state: ReturnType<typeof readOnboardingState>): void {
 
   console.log("Next suggested actions:");
   console.log("1. Fetch routes for the simulated trade:");
-  console.log("   vara-agent routes --side buy --quote USDT --amount 20");
+  console.log("   vara-agent routes --side buy --asset VARA --quote USDT --amount 20");
   console.log("2. Fetch market data from a selected exchange:");
   console.log("   vara-agent ticker --provider mexc --symbol VARA/USDT");
   console.log("3. Run simulated decisions only. No real funds are used in Paper Trading.");

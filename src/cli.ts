@@ -58,11 +58,12 @@ program
 program
   .command("routes")
   .requiredOption("--side <side>", "buy or sell")
+  .option("--asset <asset>", "base asset, e.g. VARA or USDC", "VARA")
   .requiredOption("--quote <quote>", "quote currency, e.g. USDT")
   .requiredOption("--amount <amount>", "quote amount")
   .action(async (options) => {
     try {
-      routes(options.side as TradeSide, options.quote, options.amount);
+      routes(options.side as TradeSide, options.quote, options.amount, options.asset);
     } catch (error) {
       printError(error);
       process.exitCode = 1;

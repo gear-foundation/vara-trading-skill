@@ -1057,7 +1057,7 @@ function nextReadyActions(state: OnboardingState): string {
   return [
     "Next suggested actions:",
     "1. Fetch routes for the simulated trade:",
-    "   vara-agent routes --side buy --quote USDT --amount 20",
+    "   vara-agent routes --side buy --asset VARA --quote USDT --amount 20",
     "2. Fetch market data from a selected exchange:",
     "   vara-agent ticker --provider mexc --symbol VARA/USDT",
     "3. Run simulated decisions only. No real funds are used in Paper Trading.",

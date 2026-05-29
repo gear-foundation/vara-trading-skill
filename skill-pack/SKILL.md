@@ -64,6 +64,7 @@ Read only the recipe needed for the user's request:
 
 - `skills/install_agent.md` - install and connect this skill pack.
 - `skills/onboarding.md` - first-time setup and exchange selection.
+- `skills/get_routes.md` - discover CEX routes for an asset/quote pair.
 - `skills/check_market.md` - verify a market exists and inspect limits/precision.
 - `skills/get_balance.md` - fetch account balances.
 - `skills/get_ticker.md` - fetch ticker data.
@@ -118,7 +119,7 @@ vara-agent onboarding choose-integration --integration mexc
 vara-agent onboarding choose-integration --integration gateio
 vara-agent onboarding choose-integration --integration both
 vara-agent onboarding status
-vara-agent routes --side buy --quote USDT --amount 20
+vara-agent routes --side buy --asset VARA --quote USDT --amount 20
 vara-agent check-market --provider mexc --symbol VARA/USDT
 vara-agent check-market --provider mexc --symbol USDC/USDT
 vara-agent balance --provider mexc

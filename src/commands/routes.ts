@@ -1,26 +1,38 @@
 import { getAllowedExchanges, getAllowedQuotes } from "../config.js";
 import { printOk } from "../json.js";
-import type { TradeSide, VaraRoute } from "../types.js";
+import type { TradeSide, TradingRoute } from "../types.js";
 
-export function routes(side: TradeSide, quote: string, amount: string): void {
-  const allowedExchanges = getAllowedExchanges();
-  const allowedQuotes = getAllowedQuotes();
+export function routes(
+  side: TradeSide,
+  quote: string,
+  amount: string,
+  asset = "VARA",
+): void {
+  const allowedExchanges = getAllowedExchanges().map((exchange) => exchange.toLowerCase());
+  const allowedQuotes = getAllowedQuotes().map((allowedQuote) => allowedQuote.toUpperCase());
+  const base = normalizeAsset(asset);
   const q = quote.toUpperCase();
+
+  if (base === q) {
+    throw new Error(`Asset and quote must differ. Received ${base}/${q}`);
+  }
 
   if (allowedQuotes.length > 0 && !allowedQuotes.includes(q)) {
     throw new Error(`Quote ${q} is not allowed. Allowed quotes: ${allowedQuotes.join(", ")}`);
   }
 
-  const result: VaraRoute[] = [];
+  const result: TradingRoute[] = [];
 
   if (allowedExchanges.includes("mexc") && q === "USDT") {
     result.push({
       type: "cex_trading",
       provider: "mexc",
-      symbol: "VARA/USDT",
+      asset: base,
+      symbol: `${base}/${q}`,
       side,
       quote: q,
       requiresApiKey: true,
+      notes: ["Run check-market before execution to confirm the pair exists and is active"],
     });
   }
 
@@ -28,10 +40,12 @@ export function routes(side: TradeSide, quote: string, amount: string): void {
     result.push({
       type: "cex_trading",
       provider: "gateio",
-      symbol: "VARA/USDT",
+      asset: base,
+      symbol: `${base}/${q}`,
       side,
       quote: q,
       requiresApiKey: true,
+      notes: ["Run check-market before execution to confirm the pair exists and is active"],
     });
   }
 
@@ -39,7 +53,8 @@ export function routes(side: TradeSide, quote: string, amount: string): void {
     result.push({
       type: "cex_trading",
       provider: "coinbase",
-      symbol: `VARA/${q}`,
+      asset: base,
+      symbol: `${base}/${q}`,
       side,
       quote: q,
       requiresApiKey: true,
@@ -51,7 +66,8 @@ export function routes(side: TradeSide, quote: string, amount: string): void {
     result.push({
       type: "cex_trading",
       provider: "cryptocom",
-      symbol: `VARA/${q}`,
+      asset: base,
+      symbol: `${base}/${q}`,
       side,
       quote: q,
       requiresApiKey: true,
@@ -64,7 +80,7 @@ export function routes(side: TradeSide, quote: string, amount: string): void {
       type: "instant_swap",
       provider: "exolix",
       fromAsset: q,
-      toAsset: "VARA",
+      toAsset: base,
       requiresWalletAddress: true,
       requiresDeposit: true,
       notes: ["Not implemented in the first release"],
@@ -76,7 +92,7 @@ export function routes(side: TradeSide, quote: string, amount: string): void {
       type: "fiat_onramp",
       provider: "banxa",
       fiat: q,
-      crypto: "VARA",
+      crypto: base,
       requiresWalletAddress: true,
       returnsCheckoutUrl: true,
       notes: ["Not implemented in the first release"],
@@ -84,10 +100,20 @@ export function routes(side: TradeSide, quote: string, amount: string): void {
   }
 
   printOk({
-    asset: "VARA",
+    asset: base,
     side,
     quote: q,
     amount,
     routes: result,
   });
+}
+
+function normalizeAsset(asset: string): string {
+  const normalized = asset.trim().toUpperCase();
+
+  if (!normalized) {
+    throw new Error("Asset is required");
+  }
+
+  return normalized;
 }

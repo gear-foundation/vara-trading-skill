@@ -281,9 +281,16 @@ export class CcxtAdapter {
   ): Promise<unknown> {
     this.assertMaxQuoteAmount(quoteAmount);
 
-    await this.loadMarket(symbol);
+    const market = await this.loadMarket(symbol);
 
     const estimatedBaseAmount = await this.estimateBaseAmount(symbol, quoteAmount);
+    assertMarketLimits({
+      provider: this.provider,
+      market,
+      symbol,
+      amount: estimatedBaseAmount,
+      cost: quoteAmount,
+    });
 
     if (dryRun) {
       return {
@@ -319,12 +326,20 @@ export class CcxtAdapter {
   ): Promise<unknown> {
     this.assertMaxQuoteAmount(quoteAmount);
 
-    await this.loadMarket(symbol);
+    const market = await this.loadMarket(symbol);
 
     const precisePrice = this.exchange.priceToPrecision(symbol, price);
     const rawAmount = new Decimal(quoteAmount).div(new Decimal(precisePrice));
     const preciseAmount = this.exchange.amountToPrecision(symbol, rawAmount.toString());
     const estimatedCost = new Decimal(preciseAmount).mul(new Decimal(precisePrice)).toString();
+    assertMarketLimits({
+      provider: this.provider,
+      market,
+      symbol,
+      amount: preciseAmount,
+      price: precisePrice,
+      cost: estimatedCost,
+    });
 
     if (dryRun) {
       return {
@@ -353,10 +368,17 @@ export class CcxtAdapter {
     baseAmount: string,
     dryRun: boolean,
   ): Promise<unknown> {
-    await this.loadMarket(symbol);
+    const market = await this.loadMarket(symbol);
 
     const preciseAmount = this.exchange.amountToPrecision(symbol, baseAmount);
     const estimatedQuoteAmount = await this.estimateQuoteAmount(symbol, preciseAmount);
+    assertMarketLimits({
+      provider: this.provider,
+      market,
+      symbol,
+      amount: preciseAmount,
+      cost: estimatedQuoteAmount,
+    });
 
     if (dryRun) {
       return {
@@ -380,11 +402,19 @@ export class CcxtAdapter {
     price: string,
     dryRun: boolean,
   ): Promise<unknown> {
-    await this.loadMarket(symbol);
+    const market = await this.loadMarket(symbol);
 
     const preciseAmount = this.exchange.amountToPrecision(symbol, baseAmount);
     const precisePrice = this.exchange.priceToPrecision(symbol, price);
     const estimatedCost = new Decimal(preciseAmount).mul(new Decimal(precisePrice)).toString();
+    assertMarketLimits({
+      provider: this.provider,
+      market,
+      symbol,
+      amount: preciseAmount,
+      price: precisePrice,
+      cost: estimatedCost,
+    });
 
     if (dryRun) {
       return {
@@ -438,6 +468,54 @@ function normalizeLevels(levels: readonly unknown[], limit: number): OrderBookLe
   });
 }
 
+function assertMarketLimits(input: {
+  provider: string;
+  market: Market;
+  symbol: string;
+  amount: string;
+  price?: string;
+  cost: string;
+}): void {
+  const market = input.market;
+
+  if (!market) {
+    return;
+  }
+
+  const amount = new Decimal(input.amount);
+  const cost = new Decimal(input.cost);
+  const minAmount = decimalOrUndefined(market.limits?.amount?.min);
+  const maxAmount = decimalOrUndefined(market.limits?.amount?.max);
+  const minCost = decimalOrUndefined(market.limits?.cost?.min);
+  const maxCost = decimalOrUndefined(market.limits?.cost?.max);
+  const base = market.base ?? input.symbol.split("/")[0] ?? "base";
+  const quote = market.quote ?? input.symbol.split("/")[1] ?? "quote";
+
+  if (minAmount && amount.lt(minAmount)) {
+    throw new Error(
+      `Order amount ${amount.toString()} ${base} is below ${input.provider} minimum ${minAmount.toString()} ${base} for ${input.symbol}. Increase the base amount before submitting.`,
+    );
+  }
+
+  if (maxAmount && amount.gt(maxAmount)) {
+    throw new Error(
+      `Order amount ${amount.toString()} ${base} exceeds ${input.provider} maximum ${maxAmount.toString()} ${base} for ${input.symbol}. Lower the base amount before submitting.`,
+    );
+  }
+
+  if (minCost && cost.lt(minCost)) {
+    throw new Error(
+      `Order cost ${cost.toString()} ${quote} is below ${input.provider} minimum ${minCost.toString()} ${quote} for ${input.symbol}. Increase the quote amount before submitting.`,
+    );
+  }
+
+  if (maxCost && cost.gt(maxCost)) {
+    throw new Error(
+      `Order cost ${cost.toString()} ${quote} exceeds ${input.provider} maximum ${maxCost.toString()} ${quote} for ${input.symbol}. Lower the quote amount before submitting.`,
+    );
+  }
+}
+
 export function normalizeOrder(order: unknown): NormalizedOrder {
   const record = asRecord(order);
 
@@ -460,6 +538,18 @@ export function normalizeOrder(order: unknown): NormalizedOrder {
     status: stringOrNull(record.status),
     fee: record.fee ?? record.fees ?? null,
   };
+}
+
+function decimalOrUndefined(value: unknown): Decimal | undefined {
+  if (value === undefined || value === null || value === "") {
+    return undefined;
+  }
+
+  try {
+    return new Decimal(String(value));
+  } catch {
+    return undefined;
+  }
 }
 
 function stringOrNull(value: unknown): string | null {

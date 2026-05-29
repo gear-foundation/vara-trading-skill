@@ -101,6 +101,15 @@ export type OnboardingState = {
   updatedAt: string;
 };
 
+export type CexValidationAdapter = {
+  marketsSummary(): Promise<Record<string, unknown>>;
+  balanceSummary(): Promise<{ non_zero_count: number }>;
+};
+
+export type CexValidationAdapterFactory = (
+  integration: ActiveCexIntegration,
+) => CexValidationAdapter;
+
 const configDir = path.join(os.homedir(), ".vara-trading-agent");
 const onboardingPath = path.join(configDir, "onboarding.json");
 
@@ -343,7 +352,9 @@ export async function configureRiskLimits(riskLimits: RiskLimits): Promise<Onboa
   });
 }
 
-export async function validateOnboardingSetup(): Promise<OnboardingState> {
+export async function validateOnboardingSetup(
+  adapterFactory: CexValidationAdapterFactory = createCexValidationAdapter,
+): Promise<OnboardingState> {
   const state = readOnboardingState();
   const notes: string[] = [];
 
@@ -379,7 +390,7 @@ export async function validateOnboardingSetup(): Promise<OnboardingState> {
 
     for (const integration of integrations) {
       const label = formatCexIntegration(integration);
-      const adapter = new CcxtAdapter(createExchange(integration), integration);
+      const adapter = adapterFactory(integration);
 
       try {
         const markets = await adapter.marketsSummary();
@@ -1006,6 +1017,10 @@ function assertTradeSizeAllowedForLiveTrading(
 
 function normalizeSymbol(symbol: string): string {
   return symbol.trim().toUpperCase();
+}
+
+function createCexValidationAdapter(integration: ActiveCexIntegration): CexValidationAdapter {
+  return new CcxtAdapter(createExchange(integration), integration);
 }
 
 function errorMessage(error: unknown): string {

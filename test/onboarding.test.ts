@@ -54,6 +54,52 @@ test("validation fails before exchange API credentials are present", async () =>
   );
 });
 
+test("validation tests CEX connection with markets and balance calls", async () => {
+  await resetConfiguredCexState();
+  process.env.MEXC_API_KEY = "test-key";
+  process.env.MEXC_API_SECRET = "test-secret";
+  const calls: string[] = [];
+
+  const state = await onboarding.validateOnboardingSetup((integration) => ({
+    marketsSummary: async () => {
+      calls.push(`${integration}:markets`);
+      return {
+        provider: integration,
+        markets_count: 123,
+      };
+    },
+    balanceSummary: async () => {
+      calls.push(`${integration}:balance`);
+      return {
+        non_zero_count: 2,
+      };
+    },
+  }));
+
+  assert.deepEqual(calls, ["mexc:markets", "mexc:balance"]);
+  assert.equal(state.validation?.ok, true);
+  assert.match(state.validation?.notes.join("\n") ?? "", /markets loaded through CCXT \(123 markets\)/);
+  assert.match(state.validation?.notes.join("\n") ?? "", /balances are readable \(2 non-zero assets\)/);
+});
+
+test("validation wraps CEX connection failures with exchange context", async () => {
+  await resetConfiguredCexState();
+  process.env.MEXC_API_KEY = "test-key";
+  process.env.MEXC_API_SECRET = "test-secret";
+
+  await assert.rejects(
+    () => onboarding.validateOnboardingSetup(() => ({
+      marketsSummary: async () => ({
+        markets_count: 1,
+      }),
+      balanceSummary: async () => {
+        throw new Error("permission denied");
+      },
+    })),
+    /CEX validation failed for MEXC: API credentials are present but loadMarkets\/fetchBalance failed. permission denied/,
+  );
+});
+
 test("live trading guard explains oversize quote value and configured risk limit", () => {
   writeReadyState({
     riskLimits: {
@@ -85,6 +131,20 @@ test("live trading guard blocks pairs outside onboarding risk limits", () => {
     /Allowed pairs: VARA\/USDT/,
   );
 });
+
+async function resetConfiguredCexState(): Promise<void> {
+  await onboarding.resetOnboarding();
+  await onboarding.acceptRiskWarning();
+  await onboarding.chooseIntegration("mexc");
+  await onboarding.confirmChecklist();
+  await onboarding.markCredentialsConfigured();
+  await onboarding.configureRiskLimits({
+    maxTradeSizeUsd: 10,
+    allowedAssets: ["VARA", "USDT"],
+    allowedPairs: ["VARA/USDT"],
+    maxSlippagePercent: 1,
+  });
+}
 
 function writeReadyState(overrides: Partial<import("../src/onboarding.ts").OnboardingState>): void {
   const now = new Date().toISOString();

@@ -1,4 +1,4 @@
-import type { CurrencyInterface, Exchange, Market, Order } from "ccxt";
+import type { CurrencyInterface, Exchange, Market } from "ccxt";
 import { Decimal } from "decimal.js";
 import { getMaxOrderUsd } from "../config.js";
 
@@ -305,10 +305,10 @@ export class CcxtAdapter {
         throw new Error("createMarketBuyOrderWithCost is marked as supported but method is missing");
       }
 
-      return await fn(symbol, new Decimal(quoteAmount).toNumber());
+      return normalizeOrder(await fn(symbol, new Decimal(quoteAmount).toNumber()));
     }
 
-    return await this.exchange.createMarketBuyOrder(symbol, new Decimal(estimatedBaseAmount).toNumber());
+    return normalizeOrder(await this.exchange.createMarketBuyOrder(symbol, new Decimal(estimatedBaseAmount).toNumber()));
   }
 
   async limitBuyByQuoteAmount(
@@ -341,11 +341,11 @@ export class CcxtAdapter {
       };
     }
 
-    return await this.exchange.createLimitBuyOrder(
+    return normalizeOrder(await this.exchange.createLimitBuyOrder(
       symbol,
       new Decimal(preciseAmount).toNumber(),
       new Decimal(precisePrice).toNumber(),
-    );
+    ));
   }
 
   async marketSellBaseAmount(
@@ -371,7 +371,7 @@ export class CcxtAdapter {
       };
     }
 
-    return await this.exchange.createMarketSellOrder(symbol, new Decimal(preciseAmount).toNumber());
+    return normalizeOrder(await this.exchange.createMarketSellOrder(symbol, new Decimal(preciseAmount).toNumber()));
   }
 
   async limitSellBaseAmount(
@@ -400,11 +400,11 @@ export class CcxtAdapter {
       };
     }
 
-    return await this.exchange.createLimitSellOrder(
+    return normalizeOrder(await this.exchange.createLimitSellOrder(
       symbol,
       new Decimal(preciseAmount).toNumber(),
       new Decimal(precisePrice).toNumber(),
-    );
+    ));
   }
 
   private async loadCurrencies(): Promise<Record<string, CurrencyInterface>> {
@@ -438,23 +438,27 @@ function normalizeLevels(levels: readonly unknown[], limit: number): OrderBookLe
   });
 }
 
-function normalizeOrder(order: Order): NormalizedOrder {
+export function normalizeOrder(order: unknown): NormalizedOrder {
+  const record = asRecord(order);
+
   return {
-    id: stringOrNull(order.id),
-    client_order_id: stringOrNull(order.clientOrderId),
-    timestamp: typeof order.timestamp === "number" ? order.timestamp : null,
-    datetime: stringOrNull(order.datetime),
-    symbol: stringOrNull(order.symbol),
-    type: stringOrNull(order.type),
-    side: stringOrNull(order.side),
-    price: decimalOrNull(order.price),
-    amount: decimalOrNull(order.amount),
-    filled: decimalOrNull(order.filled),
-    remaining: decimalOrNull(order.remaining),
-    cost: decimalOrNull(order.cost),
-    average: decimalOrNull(order.average),
-    status: stringOrNull(order.status),
-    fee: order.fee ?? null,
+    id: stringOrNull(record.id ?? record.orderId),
+    client_order_id: stringOrNull(
+      record.clientOrderId ?? record.client_order_id ?? record.clientOrderID,
+    ),
+    timestamp: typeof record.timestamp === "number" ? record.timestamp : null,
+    datetime: stringOrNull(record.datetime),
+    symbol: stringOrNull(record.symbol),
+    type: stringOrNull(record.type),
+    side: stringOrNull(record.side),
+    price: decimalOrNull(record.price),
+    amount: decimalOrNull(record.amount),
+    filled: decimalOrNull(record.filled),
+    remaining: decimalOrNull(record.remaining),
+    cost: decimalOrNull(record.cost),
+    average: decimalOrNull(record.average),
+    status: stringOrNull(record.status),
+    fee: record.fee ?? record.fees ?? null,
   };
 }
 

@@ -1,9 +1,9 @@
 import { Decimal } from "decimal.js";
 import { createExchange } from "../exchanges/exchangeFactory.js";
 import { CcxtAdapter } from "../exchanges/ccxtAdapter.js";
-import { isDryRun } from "../config.js";
 import { assertCexLiveTradingReady } from "../onboarding.js";
 import { printOk } from "../json.js";
+import { isUsdLikeQuote, parseSymbol, resolveDryRun } from "./tradeUtils.js";
 import type { CexProvider, ExecutionMode } from "../types.js";
 
 export async function limitSellSpot(
@@ -38,30 +38,4 @@ export async function limitSellSpot(
     mode: dryRun ? "dry-run" : "live",
     result,
   });
-}
-
-function resolveDryRun(mode?: ExecutionMode): boolean {
-  if (!mode) {
-    return isDryRun();
-  }
-
-  if (mode !== "dry-run" && mode !== "live") {
-    throw new Error('Execution mode must be "dry-run" or "live"');
-  }
-
-  return mode === "dry-run";
-}
-
-function parseSymbol(symbol: string): { base: string; quote: string } {
-  const [base, quote] = symbol.toUpperCase().split("/");
-
-  if (!base || !quote) {
-    throw new Error(`Invalid market symbol: ${symbol}`);
-  }
-
-  return { base, quote };
-}
-
-function isUsdLikeQuote(quote: string): boolean {
-  return ["USD", "USDT", "USDC"].includes(quote);
 }

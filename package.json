@@ -25,6 +25,7 @@
   "scripts": {
     "dev": "tsx src/cli.ts",
     "build": "tsc",
+    "test": "npm run build && node --test --import tsx test/*.test.ts",
     "start": "node dist/cli.js",
     "prepack": "npm run build",
     "pack:check": "npm pack --dry-run"
